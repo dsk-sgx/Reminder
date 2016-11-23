@@ -1,0 +1,26 @@
+<div>
+	<table class="table" ng-model="recordForm">
+		<tr>
+			<th width="30px;">TITLE</th>
+			<td>
+				<input type="hidden" ng-value="record.noteId"/>
+				<input type="text" class="form-control" ng-model="record.title"/>
+	    	</td>
+		</tr>
+		<tr>
+			<th>TAG</th>
+			<td><input type="text" class="form-control" ng-model="record.tags"/>
+	    	</td>
+		</tr>
+		<tr>
+			<th>TEXT</th>
+			<td><textarea id="note_text" rows="20" class="form-control" ng-model="record.text"></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<button type="button" class="btn" ng-click="submit()">登録</button>
+				<button type="button" class="btn">プレビュー </button>
+			</td>
+		</tr>
+	</table>
+</div>
