@@ -1,0 +1,12 @@
+{
+  "name": "reminder-client",
+  "version": "1.0.0",
+  "description": "Reminderのクライアントアプリケーションです",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "daisuke",
+  "license": "ISC"
+}
