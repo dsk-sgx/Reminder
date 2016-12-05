@@ -20,8 +20,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 				console.log($scope.keyword)
 			}
 			$scope.searchTag = function() {
-				console.log('searchTag');
-				console.log($scope.tag)
+				console.log('searchTag')
 				$scope.keyword = tag;
 			}
 		})
@@ -49,6 +48,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 				}
 			}
 			$scope.searchTag = function(key) {
+				console.log('searchTag')
 				console.log(key)
 				$scope.keyword = 'tag';
 			}
