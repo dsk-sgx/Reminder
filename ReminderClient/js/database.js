@@ -1,6 +1,5 @@
 var baseUrl = 'http://localhost:8081/Reminder/'
-$(function(){
-
+// $(function(){
 
   var createDb = function(storeName) {
     var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
@@ -18,7 +17,6 @@ $(function(){
     }
   }
 
-
   var syncData = function() {
     console.log('sync start')
     $.ajax({
@@ -33,7 +31,6 @@ $(function(){
     console.log('sync end')
   }
 
-
   var write = function(data) {
     console.log('write start')
     var idbReq = indexedDB.open("Reminder", 1);
@@ -44,7 +41,7 @@ $(function(){
       var transaction = db.transaction(['t_note'], "readwrite");
       var store = transaction.objectStore('t_note');
       $(data).each(function(index) {
-    	var record = {note_id:this.noteId, title:this.title, text:this.text, tags:this.tags};
+    	var record = {"note_id":this.noteId, "title":this.title, "text":this.text, "tags":this.tags};
         store.add(record)
       })
     }
@@ -56,4 +53,48 @@ $(function(){
 
   syncData()
 
-})
+  var searhAll = function() {
+    var records = []
+    var indexedDB = window.indexedDB
+    var idbReq = indexedDB.open("Reminder", 1);
+    return new Promise(function(resolve, reject) {
+      idbReq.onsuccess = function (event) {
+        var db = idbReq.result;
+        var trans = db.transaction(['t_note'], 'readonly');
+        var store = trans.objectStore('t_note');
+        var request = store.openCursor();
+        request.onsuccess = (event) => {
+          var cursor = event.target.result;
+          if (cursor) {
+            records.push({noteId:cursor.value.note_id, title:cursor.value.title, text:cursor.value.text, tags:cursor.value.tags})
+            cursor.continue();
+          }
+        };
+        resolve(records)
+      };
+    })
+  }
+
+  var searchById = function(noteId) {
+    var indexedDB = window.indexedDB
+    var idbReq = indexedDB.open("Reminder", 1);
+    var result = {}
+    return new Promise(function(resolve, reject) {
+      idbReq.onsuccess = (event) => {
+        var db = idbReq.result
+        var trans = db.transaction(['t_note'], 'readonly')
+        var store = trans.objectStore('t_note')
+        var request = store.get(Number(noteId))
+        request.onsuccess = function (evt) {
+          if (evt.target.result === undefined) {
+            console.log('data not found:' + noteId);
+          } else {
+            resolve(evt.target.result)
+            var record = evt.target.result
+            result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags};
+          }
+        }
+      }
+    })
+  }
+// })

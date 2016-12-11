@@ -5,14 +5,12 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		"listController",
 		function($scope) {
 
-			$scope.records= [
-				{"noteId":1, "title":"title11", "text":"text1"},
-				{"noteId":2, "title":"title12", "text":"text2"},
-				{"noteId":3, "title":"title13", "text":"text3"},
-				{"noteId":4, "title":"title14", "text":"text4"},
-				{"noteId":5, "title":"title15", "text":"text5"}
-			]
-			$scope.size = $scope.records.length;
+			searhAll().then(function(notes) {
+				$scope.records = notes
+				console.log(notes);
+				$scope.size = $scope.records.length
+				$scope.$apply()
+			})
 
 			console.log($scope.size);
 			$scope.search = function() {
@@ -31,11 +29,10 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		'detailController',
 		function($scope, $routeParams, $location, $anchorScroll) {
 			console.log('detail')
-			$scope.view = {
-				"title":"titleA",
-				"tags":["Java"],
-				 "text":"text"
-			 };
+			searchById($routeParams.noteId).then(function(record) {
+				$scope.view = record
+				$scope.$apply()
+			})
 			$anchorScroll();
 
 			$scope.edit = function() {
