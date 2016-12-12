@@ -2,18 +2,14 @@ var baseUrl = 'http://localhost:8081/Reminder/'
 // $(function(){
 
   var createDb = function(storeName) {
-    var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
-    var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.mozIDBTransaction || window.msIDBTransaction;
-    var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.mozIDBKeyRange || window.msIDBKeyRange;
-    var IDBCursor = window.IDBCursor || window.webkitIDBCursor;
-
-    //2.indexedDBを開く
+    var indexedDB = window.indexedDB;
     var idbReq = indexedDB.open("Reminder", 1);
-
-    //3.DBの新規作成時、またはバージョン変更時に実行するコード
     idbReq.onupgradeneeded = function (event) {
       var db = event.target.result;
-      var noteStore = db.createObjectStore("t_note", { keyPath: "note_id" });
+      var store = db.createObjectStore("t_note", { keyPath: "note_id" });
+      store.createIndex("tags", "tags");
+      store.createIndex("title", "title");
+      store.createIndex("text", "text");
     }
   }
 
@@ -26,7 +22,8 @@ var baseUrl = 'http://localhost:8081/Reminder/'
     .done(function(data){
       write(data);
 	  })
-    .fail(function(data){ //ajaxの通信に失敗した場合
+    .fail(function(data){
+      console.log('offline')
 	  });
     console.log('sync end')
   }
@@ -53,48 +50,63 @@ var baseUrl = 'http://localhost:8081/Reminder/'
 
   syncData()
 
-  var searhAll = function() {
+  var searhAll = function(scope, keyword) {
     var records = []
-    var indexedDB = window.indexedDB
-    var idbReq = indexedDB.open("Reminder", 1);
-    return new Promise(function(resolve, reject) {
-      idbReq.onsuccess = function (event) {
-        var db = idbReq.result;
-        var trans = db.transaction(['t_note'], 'readonly');
-        var store = trans.objectStore('t_note');
-        var request = store.openCursor();
-        request.onsuccess = (event) => {
-          var cursor = event.target.result;
-          if (cursor) {
-            records.push({noteId:cursor.value.note_id, title:cursor.value.title, text:cursor.value.text, tags:cursor.value.tags})
-            cursor.continue();
-          }
-        };
-        resolve(records)
-      };
+    openDb().then((db) => {
+      var trans = db.transaction(['t_note']);
+      var store = trans.objectStore('t_note');
+      var request = store.openCursor();
+      request.onsuccess = (event) => {
+        var cursor = event.target.result;
+        if (cursor) {
+          scope.records.push({noteId:cursor.value.note_id, title:cursor.value.title, text:cursor.value.text, tags:cursor.value.tags})
+          scope.$apply()
+          cursor.continue();
+        }
+      }
     })
   }
 
   var searchById = function(noteId) {
-    var indexedDB = window.indexedDB
-    var idbReq = indexedDB.open("Reminder", 1);
-    var result = {}
     return new Promise(function(resolve, reject) {
-      idbReq.onsuccess = (event) => {
-        var db = idbReq.result
-        var trans = db.transaction(['t_note'], 'readonly')
-        var store = trans.objectStore('t_note')
+      openDb().then((db) => {
+        var store =db.transaction(['t_note']).objectStore('t_note')
         var request = store.get(Number(noteId))
         request.onsuccess = function (evt) {
-          if (evt.target.result === undefined) {
-            console.log('data not found:' + noteId);
-          } else {
-            resolve(evt.target.result)
-            var record = evt.target.result
-            result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags};
+          var record = evt.target.result
+          if (record === undefined) {
+            return // TODO ここが通らないようにする
           }
+          var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags};
+          resolve(result)
         }
-      }
+      })
+    })
+  }
+
+  var insert = function(data) {
+
+  }
+
+  var searchByKeyword = function(keyword) {
+    return new Promise(function(resolve, reject) {
+      openDb().then((db) => {
+        var store =db.transaction(['t_note']).objectStore('t_note')
+        var request = store.get(Number(noteId))
+        request.onsuccess = function (evt) {
+          var record = evt.target.result
+          var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags};
+          resolve(result)
+        }
+      })
+    })
+  }
+  var openDb = function() {
+    var indexedDB = window.indexedDB
+    var idbReq = indexedDB.open("Reminder", 1);
+    return new Promise(function(resolve, reject) {
+      idbReq.onsuccess = (event) => resolve(idbReq.result)
+      idbReq.onerror = (event) => reject(event)
     })
   }
 // })

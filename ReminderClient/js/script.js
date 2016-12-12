@@ -5,18 +5,13 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		"listController",
 		function($scope) {
 
-			searhAll().then(function(notes) {
-				$scope.records = notes
-				console.log(notes);
-				$scope.size = $scope.records.length
-				$scope.$apply()
-			})
+			$scope.records = []
+			searhAll($scope)
 
-			console.log($scope.size);
 			$scope.search = function() {
-				console.log('search');
-				console.log($scope.keyword)
+				searhAll($scope, $scope.keyword)
 			}
+			
 			$scope.searchTag = function() {
 				console.log('searchTag')
 				$scope.keyword = tag;
