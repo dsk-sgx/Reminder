@@ -2,14 +2,15 @@ var baseUrl = 'http://localhost:8081/Reminder/'
 // $(function(){
 
   var createDb = function(storeName) {
-    var indexedDB = window.indexedDB;
-    var idbReq = indexedDB.open("Reminder", 1);
+    var indexedDB = window.indexedDB
+    var idbReq = indexedDB.open("Reminder",2)
     idbReq.onupgradeneeded = function (event) {
-      var db = event.target.result;
-      var store = db.createObjectStore("t_note", { keyPath: "note_id" });
-      store.createIndex("tags", "tags");
-      store.createIndex("title", "title");
-      store.createIndex("text", "text");
+      var db = event.target.result
+      var store = db.createObjectStore("t_note", { keyPath: "note_id"})
+    }
+    idbReq.onerror = function (event) {
+      console.log('error');
+      console.log(event);
     }
   }
 
@@ -24,45 +25,46 @@ var baseUrl = 'http://localhost:8081/Reminder/'
 	  })
     .fail(function(data){
       console.log('offline')
-	  });
+	  })
     console.log('sync end')
   }
 
   var write = function(data) {
     console.log('write start')
-    var idbReq = indexedDB.open("Reminder", 1);
-    var db;
-    idbReq.onsuccess = function (event) {
-      console.log('onsuccess')
-      db = idbReq.result;
-      var transaction = db.transaction(['t_note'], "readwrite");
-      var store = transaction.objectStore('t_note');
+    openDb().then((db) => {
+      var transaction = db.transaction(['t_note'], "readwrite")
+      var store = transaction.objectStore('t_note')
       $(data).each(function(index) {
-    	var record = {"note_id":this.noteId, "title":this.title, "text":this.text, "tags":this.tags};
+    	   var record = {"note_id":this.noteId, "title":this.title, "text":this.text, "tags":this.tags}
         store.add(record)
       })
-    }
-    idbReq.onerror = function(event) {
-      console.log('onerror')
-    }
+    })
     console.log('write end')
   }
 
+  createDb()
   syncData()
 
   var searhAll = function(scope, keyword) {
-    var records = []
     openDb().then((db) => {
-      var trans = db.transaction(['t_note']);
-      var store = trans.objectStore('t_note');
-      var request = store.openCursor();
+      console.log('searhAll start');
+      var trans = db.transaction(['t_note'])
+      var store = trans.objectStore('t_note')
+      var request = store.openCursor()
+      var count = 0;
       request.onsuccess = (event) => {
-        var cursor = event.target.result;
+        var cursor = event.target.result
         if (cursor) {
           scope.records.push({noteId:cursor.value.note_id, title:cursor.value.title, text:cursor.value.text, tags:cursor.value.tags})
-          scope.$apply()
-          cursor.continue();
+          cursor.continue()
+          count++
         }
+        if (100 == count || !cursor) {
+          scope.$apply()
+          count = 0
+          console.log(scope.records.length + '件');
+        }
+        console.log('searhAll end');
       }
     })
   }
@@ -70,14 +72,14 @@ var baseUrl = 'http://localhost:8081/Reminder/'
   var searchById = function(noteId) {
     return new Promise(function(resolve, reject) {
       openDb().then((db) => {
-        var store =db.transaction(['t_note']).objectStore('t_note')
+        var store = db.transaction(['t_note']).objectStore('t_note')
         var request = store.get(Number(noteId))
         request.onsuccess = function (evt) {
           var record = evt.target.result
           if (record === undefined) {
             return // TODO ここが通らないようにする
           }
-          var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags};
+          var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags}
           resolve(result)
         }
       })
@@ -85,7 +87,11 @@ var baseUrl = 'http://localhost:8081/Reminder/'
   }
 
   var insert = function(data) {
-
+    openDb().then((db) => {
+      var transaction = db.transaction(['t_note'], "readwrite")
+      var store = transaction.objectStore('t_note')
+      store.add({"title":data.title, "text":data.text, "tags":data.tags})
+    })
   }
 
   var searchByKeyword = function(keyword) {
@@ -95,7 +101,7 @@ var baseUrl = 'http://localhost:8081/Reminder/'
         var request = store.get(Number(noteId))
         request.onsuccess = function (evt) {
           var record = evt.target.result
-          var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags};
+          var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags}
           resolve(result)
         }
       })
@@ -103,7 +109,7 @@ var baseUrl = 'http://localhost:8081/Reminder/'
   }
   var openDb = function() {
     var indexedDB = window.indexedDB
-    var idbReq = indexedDB.open("Reminder", 1);
+    var idbReq = indexedDB.open("Reminder", 2)
     return new Promise(function(resolve, reject) {
       idbReq.onsuccess = (event) => resolve(idbReq.result)
       idbReq.onerror = (event) => reject(event)

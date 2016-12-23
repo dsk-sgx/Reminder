@@ -2,27 +2,28 @@ var module = angular.module("reminder", [ 'ngRoute'])
 
 // 一覧画面
 .controller(
-		"listController",
-		function($scope) {
+	"listController",
+	function($scope) {
 
-			$scope.records = []
-			searhAll($scope)
+		$scope.records = []
+		searhAll($scope)
 
-			$scope.search = function() {
-				searhAll($scope, $scope.keyword)
-			}
-			
-			$scope.searchTag = function() {
-				console.log('searchTag')
-				$scope.keyword = tag;
-			}
-		})
+		$scope.search = function() {
+		}
+
+		$scope.searchTag = function() {
+			console.log('searchTag')
+			console.log('keyword' + $scope.keyword);
+			$scope.keyword = $scope.tag;
+		}
+	}
+)
 
 
 // 詳細
 .controller(
 		'detailController',
-		function($scope, $routeParams, $location, $anchorScroll) {
+		function($scope, $routeParams, $location, $anchorScroll, $timeout) {
 			console.log('detail')
 			searchById($routeParams.noteId).then(function(record) {
 				$scope.view = record
@@ -39,10 +40,11 @@ var module = angular.module("reminder", [ 'ngRoute'])
 					console.log('delete')
 				}
 			}
-			$scope.searchTag = function(key) {
-				console.log('searchTag')
-				console.log(key)
-				$scope.keyword = 'tag';
+			$scope.searchTag = function(tag) {
+				$timeout(function(){
+					$scope.keyword = tag
+					$scope.$apply()
+	      })
 			}
 		})
 // 更新
@@ -86,6 +88,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			data.tags = tags.split(',');
 		}
 		data.text = $scope.record.text;
+		insert(data)
 		console.log(data)
 	}
 })
