@@ -60,9 +60,9 @@ var baseUrl = 'http://localhost:8081/Reminder/'
           count++
         }
         if (100 == count || !cursor) {
+          scope.count = scope.records.length
           scope.$apply()
           count = 0
-          scope.count = scope.records.length
         }
         console.log('searhAll end');
       }
