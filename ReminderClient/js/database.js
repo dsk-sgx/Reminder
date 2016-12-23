@@ -62,7 +62,7 @@ var baseUrl = 'http://localhost:8081/Reminder/'
         if (100 == count || !cursor) {
           scope.$apply()
           count = 0
-          console.log(scope.records.length + '件');
+          scope.count = scope.records.length
         }
         console.log('searhAll end');
       }

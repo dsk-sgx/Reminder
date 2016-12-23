@@ -38,11 +38,16 @@ window.jQuery = window.$ = require('./js/jquery');
 						<input type="text" class=" form-control navbar-form "
 							style="float: left" ng-model="keyword"
 							placeholder="検索キーワード">
+							<div>
+								<span>{{count}}</span>件中
+								<span>{{(records|filter:keyword).length}}</span>件を表示
+							</div>
 					</div>
 				</div>
 			</div>
 		</nav>
-		<div style="height: 80px"></div>
+
+		<div style="height: 95px"></div>
 		<div>
 			<div
 				style="float: left; width: 280px; height: 1200px; overflow: auto">
@@ -58,5 +63,6 @@ window.jQuery = window.$ = require('./js/jquery');
 			<div style="height: 1200px; overflow: scroll" ng-view></div>
 		</div>
 	</div>
+</div>
 </body>
 </html>

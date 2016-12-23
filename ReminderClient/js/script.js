@@ -4,21 +4,10 @@ var module = angular.module("reminder", [ 'ngRoute'])
 .controller(
 	"listController",
 	function($scope) {
-
 		$scope.records = []
 		searhAll($scope)
-
-		$scope.search = function() {
-		}
-
-		$scope.searchTag = function() {
-			console.log('searchTag')
-			console.log('keyword' + $scope.keyword);
-			$scope.keyword = $scope.tag;
-		}
 	}
 )
-
 
 // 詳細
 .controller(
@@ -26,8 +15,9 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		function($scope, $routeParams, $location, $anchorScroll, $timeout) {
 			console.log('detail')
 			searchById($routeParams.noteId).then(function(record) {
-				$scope.view = record
-				$scope.$apply()
+				$timeout(function(){
+					$scope.view = record
+				})
 			})
 			$anchorScroll();
 
@@ -41,12 +31,14 @@ var module = angular.module("reminder", [ 'ngRoute'])
 				}
 			}
 			$scope.searchTag = function(tag) {
+				console.log(tag);
 				$timeout(function(){
-					$scope.keyword = tag
-					$scope.$apply()
+					$scope.$parent.keyword = tag
+					$scope.$parent.$apply()
 	      })
 			}
 		})
+
 // 更新
 .controller(
 		'editController',
