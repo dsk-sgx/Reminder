@@ -14,7 +14,10 @@
 		</tr>
 		<tr>
 			<th>TEXT</th>
-			<td><textarea id="note_text" rows="20" class="form-control" ng-model="record.text"></textarea></td>
+			<td>
+  			<textarea id="note_text" rows="20" class="form-control" ng-model="record.text"></textarea>
+				<div ng-bind-html="record.text | marked"></div>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="2">

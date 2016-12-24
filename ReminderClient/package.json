@@ -8,5 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "daisuke",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "marked": "^0.3.6"
+  }
 }

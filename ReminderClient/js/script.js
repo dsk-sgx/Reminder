@@ -83,9 +83,23 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		insert(data)
 		console.log(data)
 	}
+	$scope.parseMarkdown = function() {
+    $("#preview").html(marked($scope.record.text))
+	}
 })
 
-module.config(function($routeProvider) {
+// マークダウンに変換するフィルタ
+.filter('marked', function() {
+	return function(value) {
+    return marked(value);
+  };
+})
+
+.config(function($sceProvider) {
+  $sceProvider.enabled(false);
+})
+
+.config(function($routeProvider) {
 	$routeProvider.when('/notes/', {
 		controller : 'listController',
 		templateUrl : 'detail.html',
