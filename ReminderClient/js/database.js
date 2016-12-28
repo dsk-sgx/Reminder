@@ -76,9 +76,6 @@ var baseUrl = 'http://localhost:8081/Reminder/'
         var request = store.get(Number(noteId))
         request.onsuccess = function (evt) {
           var record = evt.target.result
-          if (record === undefined) {
-            return // TODO ここが通らないようにする
-          }
           var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags}
           resolve(result)
         }
@@ -86,11 +83,15 @@ var baseUrl = 'http://localhost:8081/Reminder/'
     })
   }
 
-  var insert = function(data) {
+  var register = function(data) {
     openDb().then((db) => {
       var transaction = db.transaction(['t_note'], "readwrite")
       var store = transaction.objectStore('t_note')
-      store.add({"title":data.title, "text":data.text, "tags":data.tags})
+      console.log(data);
+      var request = store.put(data)
+      request.onsuccess = function(evt) {
+        console.log('success')
+      }
     })
   }
 
@@ -101,7 +102,7 @@ var baseUrl = 'http://localhost:8081/Reminder/'
         var request = store.get(Number(noteId))
         request.onsuccess = function (evt) {
           var record = evt.target.result
-          var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags}
+          var result = {'note_id':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags}
           resolve(result)
         }
       })

@@ -42,18 +42,18 @@ var module = angular.module("reminder", [ 'ngRoute'])
 // 更新
 .controller(
 		'editController',
-		function($scope, $routeParams, $location) {
-			console.log('edit:' + $routeParams.noteId)
+		function($scope, $routeParams, $location, $timeout) {
 
-			$scope.record = {
-				"title":"titleA",
-				"tags":["Java"],
-				 "text":"text"
-			 };
+			searchById($routeParams.noteId).then(function(record) {
+				$timeout(function(){
+					$scope.record = record
+				})
+			})
+
 			$scope.submit = function() {
 				console.log('edit:submit');
-				var data = {};
-				data.noteId = $scope.record.noteId;
+				var data = {}
+				data.note_id = $scope.record.noteId;
 				data.title = $scope.record.title;
 				data.text = $scope.record.text;
 
@@ -64,7 +64,16 @@ var module = angular.module("reminder", [ 'ngRoute'])
 					data.tags = tags.split(',');
 				}
 
-				console.log(data);
+				register(data)
+				$scope.$parent.records.forEach(function(record) {
+					if (record.noteId == $routeParams.noteId) {
+						record.title = data.title;
+						record.tags = data.tags;
+						record.text = data.text;
+						return;
+					}
+				})
+				$location.path('/notes/' + $routeParams.noteId);
 				}
 		})
 
@@ -80,8 +89,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			data.tags = tags.split(',');
 		}
 		data.text = $scope.record.text;
-		insert(data)
-		console.log(data)
+		register(data)
 	}
 	$scope.parseMarkdown = function() {
     $("#preview").html(marked($scope.record.text))
