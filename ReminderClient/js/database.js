@@ -3,7 +3,7 @@ var baseUrl = 'http://localhost:8081/Reminder/'
 
   var createDb = function(storeName) {
     var indexedDB = window.indexedDB
-    var idbReq = indexedDB.open("Reminder",2)
+    var idbReq = indexedDB.open("Reminder",4)
     idbReq.onupgradeneeded = function (event) {
       var db = event.target.result
       var store = db.createObjectStore("t_note", { keyPath: "note_id"})
@@ -69,17 +69,18 @@ var baseUrl = 'http://localhost:8081/Reminder/'
     })
   }
 
-  var searchById = function(noteId) {
-    return new Promise(function(resolve, reject) {
-      openDb().then((db) => {
-        var store = db.transaction(['t_note']).objectStore('t_note')
-        var request = store.get(Number(noteId))
-        request.onsuccess = function (evt) {
-          var record = evt.target.result
-          var result = {'noteId':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags}
-          resolve(result)
-        }
-      })
+  var searchById = function(noteId, target, scope) {
+    openDb().then((db) => {
+      var store = db.transaction(['t_note']).objectStore('t_note')
+      var request = store.get(Number(noteId))
+      request.onsuccess = function (evt) {
+        var record = evt.target.result
+        target.noteId = record.note_id
+        target.title = record.title
+        target.text = record.text
+        target.tags = record.tags
+        scope.$apply()
+      }
     })
   }
 
@@ -95,22 +96,20 @@ var baseUrl = 'http://localhost:8081/Reminder/'
     })
   }
 
-  var searchByKeyword = function(keyword) {
-    return new Promise(function(resolve, reject) {
-      openDb().then((db) => {
-        var store =db.transaction(['t_note']).objectStore('t_note')
-        var request = store.get(Number(noteId))
-        request.onsuccess = function (evt) {
-          var record = evt.target.result
-          var result = {'note_id':record.note_id, 'title':record.title, 'text':record.text, 'tags':record.tags}
-          resolve(result)
-        }
-      })
+  var deleteNote = (noteId) =>{
+    openDb().then((db) => {
+      var transaction = db.transaction(['t_note'], "readwrite")
+      var store = transaction.objectStore('t_note')
+      var request = store.delete(Number(noteId))
+      request.onsuccess = function(evt) {
+        console.log('success delete:' + noteId)
+      }
     })
   }
+
   var openDb = function() {
     var indexedDB = window.indexedDB
-    var idbReq = indexedDB.open("Reminder", 2)
+    var idbReq = indexedDB.open("Reminder", 4)
     return new Promise(function(resolve, reject) {
       idbReq.onsuccess = (event) => resolve(idbReq.result)
       idbReq.onerror = (event) => reject(event)

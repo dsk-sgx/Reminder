@@ -6,6 +6,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	function($scope) {
 		$scope.records = []
 		searhAll($scope)
+		$scope.tags = []
 	}
 )
 
@@ -13,12 +14,8 @@ var module = angular.module("reminder", [ 'ngRoute'])
 .controller(
 		'detailController',
 		function($scope, $routeParams, $location, $anchorScroll, $timeout) {
-			console.log('detail')
-			searchById($routeParams.noteId).then(function(record) {
-				$timeout(function(){
-					$scope.view = record
-				})
-			})
+			$scope.view = {}
+			searchById($routeParams.noteId, $scope.view, $scope)
 			$anchorScroll();
 
 			$scope.edit = function() {
@@ -27,12 +24,27 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			}
 			$scope.delete = function() {
 				if (window.confirm("削除しますか？")) {
-					console.log('delete')
+					deleteNote($routeParams.noteId)
+				  var index
+					$scope.$parent.records.forEach(function(record, i) {
+						if (record.noteId == $routeParams.noteId) {
+							index = i
+							return;
+						}
+					})
+					$timeout(function() {
+						$scope.$parent.records.splice(index, 1)
+						$scope.$parent.count = $scope.$parent.records.length
+						$scope.$apply()
+						$location.path('/notes/')
+					})
 				}
 			}
+
 			$scope.searchTag = function(tag) {
 				console.log(tag);
 				$timeout(function(){
+					$scope.$parent.tags.push(tag)
 					$scope.$parent.keyword = tag
 					$scope.$parent.$apply()
 	      })
@@ -43,12 +55,8 @@ var module = angular.module("reminder", [ 'ngRoute'])
 .controller(
 		'editController',
 		function($scope, $routeParams, $location, $timeout) {
-
-			searchById($routeParams.noteId).then(function(record) {
-				$timeout(function(){
-					$scope.record = record
-				})
-			})
+			$scope.record = {}
+			searchById($routeParams.noteId, $scope.record, $scope);
 
 			$scope.submit = function() {
 				console.log('edit:submit');

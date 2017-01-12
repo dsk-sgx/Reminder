@@ -35,6 +35,14 @@ window.jQuery = window.$ = require('./js/jquery');
 					<ul class="nav navbar-nav">
 						<li><a ng-href="#/record">新規作成</a></li>
 					</ul>
+					<div style="padding-left:400px; display:inline">
+						<div ng-repeat="tag in tags" class="radio-inline">
+							<span class="bg-info alert-dismissible fade in">
+								{{tag}}
+							</span>
+							<button type="button" class="close">&times;</button>
+						</span>
+					</div>
 					<div class="form-group pull-right">
 						<input type="text" class=" form-control navbar-form "
 							style="float: left" ng-model="keyword"
