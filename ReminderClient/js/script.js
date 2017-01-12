@@ -3,11 +3,23 @@ var module = angular.module("reminder", [ 'ngRoute'])
 // 一覧画面
 .controller(
 	"listController",
-	function($scope) {
+	function($scope, $timeout) {
 		$scope.records = []
 		searhAll($scope)
 		$scope.tags = []
+
+	$scope.closeTag = (tag) => {
+		$timeout(function () {
+				$scope.tags.forEach(function(value, i) {
+					if (tag == value) {
+						$scope.tags.splice(i, 1)
+						return
+					}
+				})
+		});
 	}
+}
+
 )
 
 // 詳細
@@ -25,18 +37,16 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			$scope.delete = function() {
 				if (window.confirm("削除しますか？")) {
 					deleteNote($routeParams.noteId)
-				  var index
-					$scope.$parent.records.forEach(function(record, i) {
+				  $scope.$parent.records.forEach(function(record, i) {
 						if (record.noteId == $routeParams.noteId) {
-							index = i
+							$timeout(function() {
+								$scope.$parent.records.splice(index, 1)
+								$scope.$parent.count = $scope.$parent.records.length
+								$scope.$apply()
+								$location.path('/notes/')
+							})
 							return;
 						}
-					})
-					$timeout(function() {
-						$scope.$parent.records.splice(index, 1)
-						$scope.$parent.count = $scope.$parent.records.length
-						$scope.$apply()
-						$location.path('/notes/')
 					})
 				}
 			}
