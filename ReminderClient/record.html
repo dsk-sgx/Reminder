@@ -2,25 +2,40 @@
 	<table class="table" ng-model="recordForm">
 		<tr>
 			<th width="30px;">TITLE</th>
-			<td>
-				<input type="hidden" ng-value="record.noteId"/>
+			<td colspan="2">
+				<input type="hidden" ng-value="record.noteId" required/>
 				<input type="text" class="form-control" ng-model="record.title"/>
-	    	</td>
+	    </td>
 		</tr>
 		<tr>
 			<th>TAG</th>
-			<td><input type="text" class="form-control" ng-model="record.tags"/>
-	    	</td>
+			<td colspan="2">
+				<input type="text" class="form-control" ng-model="record.tags"/>
+	    </td>
 		</tr>
 		<tr>
 			<th>TEXT</th>
-			<td>
+			<td width="500px">
   			<textarea id="note_text" rows="20" class="form-control" ng-model="record.text"></textarea>
-				<div ng-bind-html="record.text | marked"></div>
+			</td>
+			<td>
+				<div class="panel panel-default">
+					<div style="height:400px" ng-bind-html="record.text | marked"></div>
+				</div>
 			</td>
 		</tr>
 		<tr>
+			<th>FILE</th>
 			<td colspan="2">
+				<input id="lefile" type="file" style="display:none">
+				<div class="input-group">
+				  <input type="text" id="photoCover" class="form-control" placeholder="select file...">
+				  <span class="input-group-btn"><button type="button" class="btn" onclick="$('input&#91;id=lefile&#93;').click();">Browse</button></span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
 				<button type="button" class="btn" ng-click="submit()">登録</button>
 				<button type="button" class="btn">プレビュー </button>
 			</td>

@@ -8,18 +8,17 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		searhAll($scope)
 		$scope.tags = []
 
-	$scope.closeTag = (tag) => {
-		$timeout(function () {
+		$scope.closeTag = (tag) => {
+			$timeout(function () {
 				$scope.tags.forEach(function(value, i) {
 					if (tag == value) {
 						$scope.tags.splice(i, 1)
 						return
 					}
 				})
-		});
+			});
+		}
 	}
-}
-
 )
 
 // 詳細
@@ -38,9 +37,12 @@ var module = angular.module("reminder", [ 'ngRoute'])
 				if (window.confirm("削除しますか？")) {
 					deleteNote($routeParams.noteId)
 				  $scope.$parent.records.forEach(function(record, i) {
+						console.log(record);
+						console.log($routeParams.noteId);
+						console.log(record.noteId == $routeParams.noteId);
 						if (record.noteId == $routeParams.noteId) {
 							$timeout(function() {
-								$scope.$parent.records.splice(index, 1)
+								$scope.$parent.records.splice(i, 1)
 								$scope.$parent.count = $scope.$parent.records.length
 								$scope.$apply()
 								$location.path('/notes/')
@@ -71,7 +73,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			$scope.submit = function() {
 				console.log('edit:submit');
 				var data = {}
-				data.note_id = $scope.record.noteId;
+				data.noteId = $scope.record.noteId;
 				data.title = $scope.record.title;
 				data.text = $scope.record.text;
 
