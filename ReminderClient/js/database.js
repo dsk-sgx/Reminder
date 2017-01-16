@@ -1,5 +1,5 @@
-const DB_NAME = 'Reminder6'
-const DB_VER = 3
+const DB_NAME = 'Reminder'
+const DB_VER = 1
 const STORE_NANE = 'notes'
 
 var initializeDb = function() {
