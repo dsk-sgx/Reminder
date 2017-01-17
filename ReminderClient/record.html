@@ -4,7 +4,7 @@
 			<th width="30px;">TITLE</th>
 			<td colspan="2">
 				<input type="hidden" ng-value="record.noteId" required/>
-				<input type="text" class="form-control" ng-model="record.title"/>
+				<input type="text" class="form-control" ng-model="record.title" required="required"/>
 	    </td>
 		</tr>
 		<tr>
@@ -16,7 +16,7 @@
 		<tr>
 			<th>TEXT</th>
 			<td width="500px">
-  			<textarea id="note_text" rows="20" class="form-control" ng-model="record.text"></textarea>
+  			<textarea id="note_text" rows="20" class="form-control" ng-model="record.text" required="required"></textarea>
 			</td>
 			<td>
 				<div class="panel panel-default">
@@ -37,7 +37,6 @@
 		<tr>
 			<td colspan="3">
 				<button type="button" class="btn" ng-click="submit()">登録</button>
-				<button type="button" class="btn">プレビュー </button>
 			</td>
 		</tr>
 	</table>

@@ -51,42 +51,38 @@ var searhAll = function(scope, keyword) {
   })
 }
 
-var searchById = function(noteId, target, scope) {
-  console.log(noteId);
-  openDb().then((db) => {
-    var store = db.transaction([STORE_NANE]).objectStore(STORE_NANE)
-    var request = store.get(Number(noteId))
-    request.onsuccess = function (evt) {
-      var record = evt.target.result
-      target.noteId = record.noteId
-      target.title = record.title
-      target.text = record.text
-      target.tags = record.tags
-      scope.$apply()
-    }
+var searchById = function(noteId) {
+  return new Promise(function(resolve, reject) {
+    console.log(noteId);
+    openDb().then((db) => {
+      var store = db.transaction([STORE_NANE]).objectStore(STORE_NANE)
+      var request = store.get(Number(noteId))
+        request.onsuccess = (event) => resolve(event.target.result)
+        request.onerror = (event) => reject(event)
+    })
   })
 }
 
 var register = function(data) {
-  openDb().then((db) => {
-    var transaction = db.transaction([STORE_NANE], "readwrite")
-    var store = transaction.objectStore(STORE_NANE)
-    var request = data.noteId == undefined ? store.add(data) : store.put(data)
-    request.onsuccess = function(event) {
-      console.log('success register:')
-      console.log(event)
-    }
+  return new Promise(function(resolve, reject) {
+    openDb().then((db) => {
+      var transaction = db.transaction([STORE_NANE], "readwrite")
+      var store = transaction.objectStore(STORE_NANE)
+      var request = store.put(data)
+      request.onsuccess = (event) => resolve(event.target.result)
+      request.onerror = (event) => reject(event)
+    })
   })
 }
 
 var deleteNote = (noteId) =>{
+  return new Promise(function(resolve, reject) {
   openDb().then((db) => {
     var transaction = db.transaction([STORE_NANE], "readwrite")
     var store = transaction.objectStore(STORE_NANE)
     var request = store.delete(Number(noteId))
-    request.onsuccess = function(event) {
-      console.log('success delete:' + noteId)
-      console.log(event);
-    }
+    request.onsuccess = (event) => resolve(event)
+    request.onerror = (event) => reject(event)
   })
+})
 }

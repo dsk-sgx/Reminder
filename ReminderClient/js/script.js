@@ -25,30 +25,34 @@ var module = angular.module("reminder", [ 'ngRoute'])
 .controller(
 		'detailController',
 		function($scope, $routeParams, $location, $anchorScroll, $timeout) {
-			$scope.view = {}
-			searchById($routeParams.noteId, $scope.view, $scope)
-			$anchorScroll();
+			searchById($routeParams.noteId).then((record) => {
+				$timeout(() => {
+					console.log(record);
+					$scope.view = record;
+					$anchorScroll();
+				})
+			})
 
 			$scope.edit = function() {
 				console.log('edit')
-				$location.path('/edit/' + $routeParams.noteId);
+				$location.path('/record/' + $routeParams.noteId);
 			}
+
 			$scope.delete = function() {
 				if (window.confirm("削除しますか？")) {
-					deleteNote($routeParams.noteId)
-				  $scope.$parent.records.forEach(function(record, i) {
-						console.log(record);
-						console.log($routeParams.noteId);
-						console.log(record.noteId == $routeParams.noteId);
-						if (record.noteId == $routeParams.noteId) {
-							$timeout(function() {
-								$scope.$parent.records.splice(i, 1)
-								$scope.$parent.count = $scope.$parent.records.length
-								$scope.$apply()
-								$location.path('/notes/')
-							})
-							return;
-						}
+					deleteNote($routeParams.noteId).then((arg) => {
+						console.log('arg');
+						console.log(arg);
+					  $scope.$parent.records.forEach(function(record, i) {
+							if (record.noteId == $routeParams.noteId) {
+								$timeout(function() {
+									$scope.$parent.records.splice(i, 1)
+									$scope.$parent.count = $scope.$parent.records.length
+									$location.path('/notes/')
+								})
+								return;
+							}
+						})
 					})
 				}
 			}
@@ -63,54 +67,54 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			}
 		})
 
-// 更新
-.controller(
-		'editController',
-		function($scope, $routeParams, $location, $timeout) {
-			$scope.record = {}
-			searchById($routeParams.noteId, $scope.record, $scope);
-
-			$scope.submit = function() {
-				console.log('edit:submit');
-				var data = {}
-				data.noteId = $scope.record.noteId;
-				data.title = $scope.record.title;
-				data.text = $scope.record.text;
-
-				if (Array.isArray($scope.record.tags)) {
-					data.tags =	$scope.record.tags;
-				} else {
-					var tags = $scope.record.tags.replace(' ', ",");
-					data.tags = tags.split(',');
-				}
-
-				register(data)
-				$scope.$parent.records.forEach(function(record) {
-					if (record.noteId == $routeParams.noteId) {
-						record.title = data.title;
-						record.tags = data.tags;
-						record.text = data.text;
-						return;
-					}
-				})
-				$location.path('/notes/' + $routeParams.noteId);
-				}
+// 登録/更新
+.controller('recordController', function($scope, $routeParams, $location, $anchorScroll, $timeout) {
+	var isNew = $routeParams.noteId == undefined
+	console.log('isNew:' + isNew);
+	if (!isNew) {
+		searchById($routeParams.noteId).then((record) => {
+			$timeout(() => {
+				console.log(record);
+				$scope.record = record
+				$anchorScroll();
+			})
 		})
+	}
 
-// 登録
-.controller('createController', function($scope, $location) {
 	$scope.submit = function() {
-		var data = {};
-		data.title = $scope.record.title;
+		console.log('create');
+		var data = $scope.record;
+
 		if (Array.isArray($scope.record.tags)) {
-			data.tags =	$scope.record.tags;
+			// do nothing
+		} else if (data.tags == null || data.tags == '') {
+			data.tags =	[]
 		} else {
-			var tags = $scope.record.tags.replace(' ', ",");
+			var tags = data.tags.replace(' ', ",");
 			data.tags = tags.split(',');
 		}
 		data.text = $scope.record.text;
-		register(data)
+		register(data).then((noteId) =>{
+			$timeout(() => {
+				data.noteId = noteId
+				if (isNew) {
+					$scope.$parent.records.push(data)
+				} else {
+					$scope.$parent.records.some(function(record) {
+						if (record.noteId == noteId) {
+							record.title = data.title
+							record.tags = data.tags
+							record.text = data.text
+							return true
+						}
+					})
+				}
+				$scope.$parent.count = $scope.$parent.records.length
+				$location.path('/notes/' + noteId)
+			})
+		})
 	}
+
 	$scope.parseMarkdown = function() {
     $("#preview").html(marked($scope.record.text))
 	}
@@ -134,11 +138,11 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	}).when('/notes/:noteId/', {
 		controller : 'detailController',
 		templateUrl : 'detail.html',
-	}).when('/record/', {
-		controller : 'createController',
+	}).when('/record/:noteId', {
+		controller : 'recordController',
 		templateUrl : 'record.html',
-	}).when('/edit/:noteId', {
-		controller : 'editController',
+	}).when('/record', {
+		controller : 'recordController',
 		templateUrl : 'record.html',
 	}).otherwise({
 		redirectTo : '/notes/'
