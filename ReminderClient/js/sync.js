@@ -12,7 +12,7 @@
     .fail(function(data){
       console.log('offline')
 	  })
-    consこole.log('sync end')
+    console.log('sync end')
   }
 
   var write = function(data) {
@@ -20,10 +20,14 @@
     openDb().then((db) => {
       var transaction = db.transaction(['notes'], "readwrite")
       var store = transaction.objectStore('notes')
-      $(data).each(function(index) {
-    	   var record = {"note_id":this.noteId, "title":this.title, "text":this.text, "tags":this.tags}
-        store.add(record)
+      data.forEach((record) => {
+        console.log(record)
+        store.add(record);
       })
     })
     console.log('write end')
   }
+  
+  if (navigator.onLine) {
+    syncData()
+  } 
