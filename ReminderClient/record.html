@@ -1,32 +1,41 @@
+<script>
+$(function () {
+	$('textarea').bind('mouseup', () => {
+		var height = $('textarea').css('height')
+		console.log(height)
+		$('#preview').css('height', height)
+	});
+});
+</script>
 <div>
 	<table class="table" ng-model="recordForm">
 		<tr>
 			<th width="30px;">TITLE</th>
-			<td colspan="2">
+			<td>
 				<input type="hidden" ng-value="record.noteId" required/>
-				<input type="text" class="form-control" ng-model="record.title" required="required"/>
+				<input type="text" class="form-control" ng-model="record.title" required="required" placeholder="タイトルは必須入力です"/>
 	    </td>
 		</tr>
 		<tr>
 			<th>TAG</th>
-			<td colspan="2">
-				<input type="text" class="form-control" ng-model="record.tags"/>
+			<td>
+				<input type="text" class="form-control" ng-model="record.tags" placeholder="タグはカンマ区切りで複数登録できます"/>
 	    </td>
 		</tr>
 		<tr>
 			<th>TEXT</th>
-			<td width="500px">
-  			<textarea id="note_text" rows="20" class="form-control" ng-model="record.text" required="required"></textarea>
-			</td>
 			<td>
-				<div class="panel panel-default">
-					<div style="height:400px" ng-bind-html="record.text | marked"></div>
+				<div>
+					<div style="float:left">
+  					<textarea id="note_text" class="form-control" ng-model="record.text" required="required"  placeholder="テキストはマークダウンで記載できます"></textarea>
+					</div>
+					<div id="preview" style="overflow:auto" class="panel panel-default" ng-bind-html="record.text | marked"></div>
 				</div>
 			</td>
 		</tr>
 		<tr>
 			<th>FILE</th>
-			<td colspan="2">
+			<td>
 				<input id="lefile" type="file" style="display:none">
 				<div class="input-group">
 				  <input type="text" id="photoCover" class="form-control" placeholder="select file...">
@@ -35,7 +44,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3">
+			<td colspan="">
 				<button type="button" class="btn" ng-click="submit()">登録</button>
 			</td>
 		</tr>

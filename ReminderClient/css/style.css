@@ -1,0 +1,9 @@
+textarea {
+  min-width: 400px;
+  min-height: 400px;
+}
+
+#preview {
+  padding-left: 20px;
+  height:400px;
+}

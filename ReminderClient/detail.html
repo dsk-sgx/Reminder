@@ -7,8 +7,8 @@
 			<td><a ng-href="" ng-repeat="tag in view.tags" ng-click="searchTag(tag)"> #{{tag}} </a></td>
 		</tr>
 		<tr>
-			<td style="white-space: pre-line">
-				<span ng-bind-html="view.text | marked"></span>
+			<td>
+				<div class="panel" ng-bind-html="view.text | marked"></div>
 			</td>
 		</tr>
 		<tr>
