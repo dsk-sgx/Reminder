@@ -10,8 +10,10 @@ electronでWindowを表示し、データはIndexedDatabaseに保存します。
 
 ## Install
     git clone https://github.com/sugiyamads/Reminder.git
-
-## Usage
+    cd Reminder/ReminderClient/
     npm install
+    
+## Usage
     npm start
-
+    
+＊ プラットフォームごとにパッケージ化する予定です。
