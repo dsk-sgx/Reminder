@@ -5,8 +5,8 @@
 1.0.0
 
 ## Description
-electronでWindowを表示し、データはIndexedDatabaseに保存します。  
-サーバとの同期を実装予定です。
+electronでWindowを表示し、データはIndexedDatabaseに保存します。  
+テキストはマークダウンで記載できます。  
 
 ## Install
     git clone https://github.com/sugiyamads/Reminder.git
@@ -15,5 +15,7 @@ electronでWindowを表示し、データはIndexedDatabaseに保存します。
     
 ## Usage
     npm start
-    
-＊ プラットフォームごとにパッケージ化する予定です。
+
+## TODO
+* サーバとの同期を実装します
+* プラットフォームごとにパッケージ化します
