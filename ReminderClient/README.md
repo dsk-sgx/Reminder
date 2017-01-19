@@ -2,7 +2,7 @@
 日々の業務や学習したことの備忘録を残しておくクライアントアプリケーションです。
 
 ## Version
-1.0.0
+0.0.1
 
 ## Description
 electronでWindowを表示し、データはIndexedDatabaseに保存します。  
