@@ -1,3 +1,50 @@
+#wrapper {
+  height:100%;
+}
+#header {
+  margin: 5px;
+  width: 90%;
+}
+#list {
+  float: left;
+  width: 25%;
+  height:90%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+#content {
+  float : left;
+  width : 75%;
+}
+
+#list a {
+  height:90px;
+}
+#list #title {
+  font-size: 18px;
+}
+#list #tag {
+  font-size: 14px;
+  display: inline;
+}
+
+#detail {
+  margin-left: 20px;
+}
+#detail #title {
+  margin-top: 20px;
+  font-size: 28px;
+}
+#detail #tag {
+  height: 40px;
+  margin-top: 20px;
+  font-size: 18px;
+}
+#detail #text {
+  padding-bottom: 20px;
+  font-size: 16px;
+}
+
 textarea {
   min-width: 400px;
   min-height: 400px;

@@ -7,7 +7,7 @@ $(function () {
 	});
 });
 </script>
-<div>
+<div id="record">
 	<table class="table" ng-model="recordForm">
 		<tr>
 			<th width="30px;">TITLE</th>
@@ -30,16 +30,6 @@ $(function () {
   					<textarea id="note_text" class="form-control" ng-model="record.text" required="required"  placeholder="テキストはマークダウンで記載できます"></textarea>
 					</div>
 					<div id="preview" style="overflow:auto" class="panel panel-default" ng-bind-html="record.text | marked"></div>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<th>FILE</th>
-			<td>
-				<input id="lefile" type="file" style="display:none">
-				<div class="input-group">
-				  <input type="text" id="photoCover" class="form-control" placeholder="select file...">
-				  <span class="input-group-btn"><button type="button" class="btn" onclick="$('input&#91;id=lefile&#93;').click();">Browse</button></span>
 				</div>
 			</td>
 		</tr>
