@@ -134,7 +134,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 .config(function($routeProvider) {
 	$routeProvider.when('/notes/', {
 		controller : 'listController',
-		templateUrl : 'detail.html',
+		templateUrl : 'top.html',
 	}).when('/notes/:noteId/', {
 		controller : 'detailController',
 		templateUrl : 'detail.html',

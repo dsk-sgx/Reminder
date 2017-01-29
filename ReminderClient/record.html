@@ -8,35 +8,21 @@ $(function () {
 });
 </script>
 <div id="record">
-	<table class="table" ng-model="recordForm">
-		<tr>
-			<th width="30px;">TITLE</th>
-			<td>
-				<input type="hidden" ng-value="record.noteId" required/>
-				<input type="text" class="form-control" ng-model="record.title" required="required" placeholder="タイトルは必須入力です"/>
-	    </td>
-		</tr>
-		<tr>
-			<th>TAG</th>
-			<td>
-				<input type="text" class="form-control" ng-model="record.tags" placeholder="タグはカンマ区切りで複数登録できます"/>
-	    </td>
-		</tr>
-		<tr>
-			<th>TEXT</th>
-			<td>
-				<div>
-					<div style="float:left">
-  					<textarea id="note_text" class="form-control" ng-model="record.text" required="required"  placeholder="テキストはマークダウンで記載できます"></textarea>
-					</div>
-					<div id="preview" style="overflow:auto" class="panel panel-default" ng-bind-html="record.text | marked"></div>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="">
-				<button type="button" class="btn" ng-click="submit()">登録</button>
-			</td>
-		</tr>
-	</table>
+	<input type="hidden" ng-value="record.noteId" required/>
+	<div id="title">
+		<p>Title</p>
+		<input type="text" class="form-control" ng-model="record.title" required="required" placeholder="タイトルは必須入力です"/>
+	</div>
+	<div id="tag">
+		<p>Tag</p>
+		<input type="text" class="form-control" ng-model="record.tags" placeholder="タグはカンマ区切りで複数登録できます"/>
+	</div>
+	<div id="text">
+		<p>Text</p>
+		<div id="input">
+  		<textarea class="form-control" ng-model="record.text" required="required" placeholder="テキストはマークダウンで記載できます"></textarea>
+		</div>
+		<div id="preview" class="panel panel-default" ng-bind-html="record.text | marked"></div>
+	</div>
+	<button type="button" class="btn" ng-click="submit()">登録</button>
 </div>
