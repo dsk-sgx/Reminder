@@ -58,11 +58,8 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			}
 
 			$scope.searchTag = function(tag) {
-				console.log(tag);
 				$timeout(function(){
 					$scope.$parent.tags.push(tag)
-					$scope.$parent.keyword = tag
-					$scope.$parent.$apply()
 	      })
 			}
 		})
@@ -125,6 +122,53 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	return function(value) {
     return marked(value);
   };
+})
+
+// キーワード・タグ検索のフィルタ
+.filter('keywordFilter',function() {
+	return function(records, keyword, tags) {
+		if (keyword == undefined && tags.length == 0) {
+			return records;
+		}
+
+		var isMatch = (record, keyword, tags) => {
+			var keywords = keyword ==　undefined ? [] : keyword.split(' ')
+			var matchKey = () => {
+				if (keywords.length == 0) {
+					return true;
+				}
+				var result = true;
+				keywords.forEach((keyword) => {
+					if (record.title.toLowerCase().indexOf(keyword.toLowerCase()) < 0 &&
+							record.text.toLowerCase().indexOf(keyword.toLowerCase()) < 0 &&
+							record.tags.indexOf(keyword) < 0) {
+						result = false;
+						return
+					}
+				})
+				return result;
+			}
+			var matchTag = () => {
+				var result = true;
+				tags.forEach((tag) => {
+					if (record.tags.length == 0 || record.tags.indexOf(tag) < 0) {
+						result = false;
+						return;
+					}
+				})
+				return result;
+			}
+			return matchKey() && matchTag()
+		}
+
+		var result = []
+		records.forEach((record) => {
+			if (isMatch(record, keyword, tags)) {
+				result.push(record);
+			}
+		})
+		return result
+	}
 })
 
 .config(function($sceProvider) {

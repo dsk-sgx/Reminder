@@ -22,7 +22,7 @@ $(function () {
 		<div id="input">
   		<textarea class="form-control" ng-model="record.text" required="required" placeholder="テキストはマークダウンで記載できます"></textarea>
 		</div>
-		<div id="preview" class="panel panel-default" ng-bind-html="record.text | marked"></div>
+		<div id="preview" ng-bind-html="record.text | marked"></div>
 	</div>
 	<button type="button" class="btn" ng-click="submit()">登録</button>
 </div>

@@ -64,6 +64,12 @@
   font-size: 26px;
   margin-right: 10px;
 }
+#record #text #preview {
+  background-color: #fdfdfd;
+  font-size: 26px;
+  margin-left: 50px;
+  padding: 10px;
+}
 
 #record #text textarea {
   min-height: 400px;
