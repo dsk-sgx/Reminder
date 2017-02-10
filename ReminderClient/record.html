@@ -5,7 +5,13 @@ $(function () {
 		console.log(height)
 		$('#preview').css('height', height)
 	});
-});
+	$("#preview").on('click', 'a', (event) => {
+		window.open(event.target.href,'_brank')
+		return false;
+	})
+})
+</script>
+
 </script>
 <div id="record">
 	<input type="hidden" ng-value="record.noteId" required/>
