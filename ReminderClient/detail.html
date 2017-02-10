@@ -5,7 +5,16 @@
 	<div id="tag" class="panel">
 		<a ng-href="" ng-repeat="tag in view.tags" ng-click="searchTag(tag)"> #{{tag}} </a>
   </div>
-	<div id="text" class="panel" ng-bind-html="view.text | marked"></div>
+	<script>
+		$(function(){
+			$("#text").on('click', 'a', (event) => {
+				window.open(event.target.href,'_brank')
+				return false;
+			})
+		})
+	</script>
+	<div id="text" class="panel" ng-bind-html="view.text | marked">
+	</div>
 	<button type="button" class="btn" ng-click="edit()">編集</button>
 	<button type="button" class="btn" ng-click="delete()">削除</button>
 </div>
