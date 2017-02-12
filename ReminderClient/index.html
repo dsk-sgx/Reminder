@@ -38,10 +38,10 @@ window.jQuery = window.$ = require('./js/jquery');
 						<ul class="nav navbar-nav">
 							<li><a ng-href="#/record">新規作成</a></li>
 						</ul>
-						<ul>
-							<li ng-repeat="tag in tags" class="radio-inline">
+						<ul class="tags" style="float:left">
+							<li ng-repeat="tag in tags" class="tag">
 								{{tag}}
-							  <button type="button" class="close" ng-click="closeTag(tag)">&times;</button>
+							  <button id="closeTag" type="button" class="close" ng-click="closeTag(tag)">&times;</button>
 						　</li>
 					  </ul>
 						<div class="pull-right">

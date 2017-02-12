@@ -6,6 +6,39 @@
   margin: 5px;
   width: 90%;
 }
+
+li.tag:before {
+  content: '　';
+  display: inline-block;
+  position: relative;
+  background-color: #A0A0A0;
+  -webkit-transform: rotate(45deg);
+  margin-left: -12px;
+  margin-top: 3px;
+  margin-right: 5px;
+  width: 16px;
+  height: 16px;
+  z-index: 0;
+}
+
+li.tag {
+  display: inline-block;
+  position: relative;
+  background-color: #D8D8D8;
+  margin-top: 10px;
+  margin-left: 20px;
+  padding-left: 5px;
+  z-index: 1;
+}
+
+#closeTag {
+  background-color: #494747;
+  padding-left: 3px;
+  padding-right: 3px;
+  width: 20px;
+  color: #ffffff;
+}
+
 #list {
   float: left;
   width: 25%;
