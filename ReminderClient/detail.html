@@ -1,4 +1,6 @@
 <div id="detail">
+	<button type="button" class="btn" ng-click="edit()">編集</button>
+	<button type="button" class="btn" ng-click="delete()">削除</button>
 	<div id="title">
 		<p id="title">{{view.title}}</p>
 	</div>
@@ -15,6 +17,5 @@
 	</script>
 	<div id="text" class="panel" ng-bind-html="view.text | marked">
 	</div>
-	<button type="button" class="btn" ng-click="edit()">編集</button>
-	<button type="button" class="btn" ng-click="delete()">削除</button>
+
 </div>
