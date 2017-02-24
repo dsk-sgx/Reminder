@@ -14,6 +14,7 @@ $(function () {
 
 </script>
 <div id="record">
+	<button type="button" class="btn" ng-click="submit()">登録</button>
 	<input type="hidden" ng-value="record.noteId" required/>
 	<div id="title">
 		<p>Title</p>
@@ -30,5 +31,5 @@ $(function () {
 		</div>
 		<div id="preview" ng-bind-html="record.text | marked"></div>
 	</div>
-	<button type="button" class="btn" ng-click="submit()">登録</button>
+
 </div>
