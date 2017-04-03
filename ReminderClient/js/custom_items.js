@@ -1,30 +1,10 @@
 $(function () {
-    var menu = $('#slide_menu');
-    var menuBtn = $('#btn_show_items');
-    var body = $('#content_whole');
-    var layer = $('.layer');
-    var menuWidth = menu.outerWidth();
+    var list = $('#list');
+    var menuBtn = $('#list_open');
+    var content = $('#content');
 
     menuBtn.on('click', function() {
-        body.toggleClass('open');
-
-        if (body.hasClass('open')) {
-            $('.layer').show();
-            body.animate({'left': menuWidth}, 300);
-            menu.animate({'left': 0}, 300);
-        } else {
-            $('.layer').hide();
-            menu.animate({'left': -menuWidth}, 300);
-            body.animate({'left': 0}, 300);
-        }
+      $('#content').toggleClass('list_open');
+      $('#list').toggleClass('close')
     });
-
-
-    layer.on('click', function () {
-        menu.animate({'left': -menuWidth}, 300);
-        body.animate({'left': 0}, 300).removeClass('open');
-        layer.hide();
-
-    });
-
 });
