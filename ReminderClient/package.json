@@ -10,6 +10,8 @@
   "author": "daisuke",
   "license": "ISC",
   "dependencies": {
-    "marked": "^0.3.6"
+    "marked": "latest",
+    "angular": "1.6.4",
+    "angular-route": "1.6.4"
   }
 }
