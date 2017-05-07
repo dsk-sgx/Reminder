@@ -135,6 +135,10 @@ li.tag {
   min-width: 340px;
 }
 
+.btnArea {
+  position: absolute;
+  right: 40px;
+}
 .btn {
   padding: 10px;
 }
