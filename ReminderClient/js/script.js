@@ -59,6 +59,10 @@ var module = angular.module("reminder", [ 'ngRoute'])
 
 			$scope.searchTag = function(tag) {
 				$timeout(function(){
+					if ($scope.$parent.tags.includes(tag)) {
+						console.log('inclueds')
+						return;
+					}
 					$scope.$parent.tags.push(tag)
 	      })
 			}
