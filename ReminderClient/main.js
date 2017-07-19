@@ -1,11 +1,51 @@
 // electronモジュールを読み込み
 const electron = require('electron');
-const {app} = electron;
+const {app, Menu} = electron;
 const {BrowserWindow} = electron; //ウィンドウを表す[BrowserWindow]はelectronモジュールに含まれている
+
+var template = electron.Menu.buildFromTemplate(
+  [
+    {
+        label: 'File',
+        submenu: [
+          {
+            label: 'New',
+            click: () => {
+                console.log('New');
+            }
+          },
+          {
+            label: 'Import',
+            click: function() {
+              console.log('Import');
+            }
+          },
+          {
+            label: 'Export',
+            click: function() {
+              console.log('Export');
+            }
+          },
+          {
+            label: 'Quit',
+            click: () => {
+              app.quit();
+            }
+          }
+        ]
+    }
+  ]
+);
+
+// electron.Menu.setApplicationMenu(template);
 
 // 新しいウィンドウ(Webページ)を生成
 let win;
 function createWindow() {
+
+  // const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(template)
+
   // BrowserWindowインスタンスを生成
   win = new BrowserWindow({width: 1200, height: 800});
   // index.htmlを表示
