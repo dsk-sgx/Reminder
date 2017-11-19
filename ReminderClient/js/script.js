@@ -27,7 +27,6 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		function($scope, $routeParams, $location, $anchorScroll, $timeout) {
 			searchById($routeParams.noteId).then((record) => {
 				$timeout(() => {
-					console.log(record);
 					$scope.view = record;
 					$anchorScroll();
 				})
@@ -41,9 +40,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			$scope.delete = function() {
 				if (window.confirm("削除しますか？")) {
 					deleteNote($routeParams.noteId).then((arg) => {
-						console.log('arg');
-						console.log(arg);
-					  $scope.$parent.records.forEach(function(record, i) {
+						$scope.$parent.records.forEach(function(record, i) {
 							if (record.noteId == $routeParams.noteId) {
 								$timeout(function() {
 									$scope.$parent.records.splice(i, 1)
@@ -122,15 +119,15 @@ var module = angular.module("reminder", [ 'ngRoute'])
 })
 
 // マークダウンに変換するフィルタ
-.filter('marked', function() {
-	return function(value) {
+.filter('marked', () => {
+	return (value) => {
     return marked(value);
   };
 })
 
 // キーワード・タグ検索のフィルタ
-.filter('keywordFilter',function() {
-	return function(records, keyword, tags) {
+.filter('keywordFilterOld',() => {
+	return (records, keyword, tags) => {
 		if (keyword == undefined && tags.length == 0) {
 			return records;
 		}
@@ -143,6 +140,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 				}
 				var result = true;
 				keywords.forEach((keyword) => {
+
 					if (record.title.toLowerCase().indexOf(keyword.toLowerCase()) < 0 &&
 							record.text.toLowerCase().indexOf(keyword.toLowerCase()) < 0 &&
 							record.tags.indexOf(keyword) < 0) {
@@ -172,6 +170,29 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			}
 		})
 		return result
+	}
+})
+.filter('keywordFilter',() => {
+	console.log('filter')
+	var matchTag = (record, tags) => {
+    return tags.length == 0 ||
+		  tags.every((e) => record.tags.includes(e))
+	}
+	var matchKeyword = (record, keywords) => {
+		return keywords.length === 0  ||
+			keywords.every((e) => {
+					return 0 <= record.title.toLowerCase().indexOf(e.toLowerCase()) ||
+					       0 <= record.text.toLowerCase().indexOf(e.toLowerCase()) ||
+								 0 <= record.tags.indexOf(e);
+			})
+	}
+
+	return (records, keyword, tags) => {
+		console.log('フィルター')
+		var keywords = keyword ==　undefined ? [] : keyword.split(' ');
+		return records
+		  .filter((record) => matchTag(record, tags))
+			.filter((record) => matchKeyword(record, keywords))
 	}
 })
 

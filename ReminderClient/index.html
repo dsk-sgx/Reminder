@@ -50,7 +50,7 @@ window.jQuery = window.$ = require('./js/jquery');
 						<div class="pull-right">
 							<input id="ke" type="text" class="form-control navbar-form" ng-model="keyword" placeholder="検索キーワード" title="スペース区切りでAND検索が出来ます">
 							<div>
-								<span ng-bind="(records|keywordFilter:keyword:tags).length"></span></span>
+								<span ng-bind="filtered.length"></span></span>
 								<span ng-bind="' / ' + count"></span>
 								<span>件を表示</span>
 							</div>
@@ -60,7 +60,7 @@ window.jQuery = window.$ = require('./js/jquery');
 			</nav>
 		</header>
 		<div id="list" class="list-group">
-			<a class="list-group-item" href="#notes/{{(record.noteId)}}" ng-repeat="record in records | keywordFilter:keyword:tags">
+			<a class="list-group-item" href="#notes/{{(record.noteId)}}" ng-repeat="record in filtered = (records | keywordFilter:keyword:tags)">
 				<p id="title" nowrap>{{record.title}}</p>
 				<p id="tag" ng-repeat="tag in record.tags | limitTo: 3">#{{tag}}&nbsp;</p>
 			</a>
