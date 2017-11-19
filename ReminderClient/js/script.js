@@ -173,7 +173,6 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	}
 })
 .filter('keywordFilter',() => {
-	console.log('filter')
 	var matchTag = (record, tags) => {
     return tags.length == 0 ||
 		  tags.every((e) => record.tags.includes(e))
@@ -183,7 +182,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			keywords.every((e) => {
 					return 0 <= record.title.toLowerCase().indexOf(e.toLowerCase()) ||
 					       0 <= record.text.toLowerCase().indexOf(e.toLowerCase()) ||
-								 0 <= record.tags.indexOf(e);
+								 0 <= record.tags.toString().toLowerCase().indexOf(e.toLowerCase());
 			})
 	}
 

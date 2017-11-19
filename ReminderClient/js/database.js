@@ -2,15 +2,15 @@ const DB_NAME = 'Reminder'
 const DB_VER = 1
 const STORE_NANE = 'notes'
 
-var initializeDb = function() {
+var initializeDb = () => {
   var indexedDB = window.indexedDB
   var idbReq = indexedDB.open(DB_NAME,DB_VER)
-  idbReq.onupgradeneeded = function (event) {
+  idbReq.onupgradeneeded = (event) => {
     var db = event.target.result
     var store = db.createObjectStore(STORE_NANE, {keyPath:'noteId', autoIncrement:true})
     store.createIndex(STORE_NANE, 'noteId', { unique: true });
   }
-  idbReq.onerror = function (event) {
+  idbReq.onerror = (event) => {
     console.log('error');
     console.log(event);
   }
@@ -18,16 +18,16 @@ var initializeDb = function() {
 
 initializeDb();
 
-var openDb = function() {
+var openDb = () => {
   var indexedDB = window.indexedDB
   var idbReq = indexedDB.open(DB_NAME, DB_VER)
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     idbReq.onsuccess = (event) => resolve(idbReq.result)
     idbReq.onerror = (event) => reject(event)
   })
 }
 
-var searhAll = function(scope, keyword) {
+var searhAll = (scope, keyword) => {
   openDb().then((db) => {
     console.log('searhAll start');
     var trans = db.transaction([STORE_NANE])
@@ -51,8 +51,8 @@ var searhAll = function(scope, keyword) {
   })
 }
 
-var searchById = function(noteId) {
-  return new Promise(function(resolve, reject) {
+var searchById = (noteId) => {
+  return new Promise((resolve, reject) => {
     console.log(noteId);
     openDb().then((db) => {
       var store = db.transaction([STORE_NANE]).objectStore(STORE_NANE)
@@ -63,8 +63,8 @@ var searchById = function(noteId) {
   })
 }
 
-var register = function(data) {
-  return new Promise(function(resolve, reject) {
+var register = (data) => {
+  return new Promise((resolve, reject) => {
     openDb().then((db) => {
       var transaction = db.transaction([STORE_NANE], "readwrite")
       var store = transaction.objectStore(STORE_NANE)
@@ -76,7 +76,7 @@ var register = function(data) {
 }
 
 var deleteNote = (noteId) =>{
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
   openDb().then((db) => {
     var transaction = db.transaction([STORE_NANE], "readwrite")
     var store = transaction.objectStore(STORE_NANE)
