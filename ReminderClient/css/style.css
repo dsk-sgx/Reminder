@@ -42,7 +42,7 @@ li.tag {
 #list {
   float: left;
   width: 22%;
-  height:760px;
+  height:88vh;
   overflow-y: scroll;
   background-color: #ffffff;
 }

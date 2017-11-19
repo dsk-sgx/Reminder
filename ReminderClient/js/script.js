@@ -188,7 +188,6 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	}
 
 	return (records, keyword, tags) => {
-		console.log('フィルター')
 		var keywords = keyword ==　undefined ? [] : keyword.split(' ');
 		return records
 		  .filter((record) => matchTag(record, tags))
