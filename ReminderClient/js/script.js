@@ -5,7 +5,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	"listController",
 	function($scope, $timeout) {
 		$scope.records = []
-		searhAll($scope)
+		searchAll($scope)
 		$scope.tags = []
 
 		$scope.closeTag = (tag) => {

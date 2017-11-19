@@ -27,7 +27,7 @@ var openDb = () => {
   })
 }
 
-var searhAll = (scope, keyword) => {
+var searchAll = (scope) => {
   openDb().then((db) => {
     console.log('searhAll start');
     var trans = db.transaction([STORE_NANE])
