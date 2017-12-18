@@ -16,8 +16,8 @@ var template = electron.Menu.buildFromTemplate(
           },
           {
             label: 'Import',
-            click: function() {
-              console.log('Import');
+            click: () => {
+              win.webContents.send('import', '');
             }
           },
           {
