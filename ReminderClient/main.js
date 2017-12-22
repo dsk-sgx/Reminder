@@ -1,9 +1,6 @@
-// electronモジュールを読み込み
-const electron = require('electron');
-const {app, Menu} = electron;
-const {BrowserWindow} = electron; //ウィンドウを表す[BrowserWindow]はelectronモジュールに含まれている
+const {app, Menu, BrowserWindow, ipcMain} = require('electron');
 
-var template = electron.Menu.buildFromTemplate(
+var template = Menu.buildFromTemplate(
   [
     {
         label: 'File',
@@ -23,7 +20,7 @@ var template = electron.Menu.buildFromTemplate(
           {
             label: 'Export',
             click: function() {
-              console.log('Export');
+              win.webContents.send('export', '');
             }
           },
           {
@@ -37,25 +34,18 @@ var template = electron.Menu.buildFromTemplate(
   ]
 );
 
-// electron.Menu.setApplicationMenu(template);
-
-// 新しいウィンドウ(Webページ)を生成
 let win;
 function createWindow() {
 
-  // const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(template)
 
   // BrowserWindowインスタンスを生成
   win = new BrowserWindow({width: 1200, height: 800});
-  // index.htmlを表示
   win.loadURL(`file://${__dirname}/index.html`);
-  // デバッグするためのDevToolsを表示
-  // win.webContents.openDevTools();
-  // ウィンドウを閉じたら参照を破棄
   win.on('closed', () => {   // ()は　function ()と書いていい
     win = null;
   });
+ // win.webContents.openDevTools();
 }
 // アプリの準備が整ったらウィンドウを表示
 app.on('ready', createWindow);
@@ -71,13 +61,7 @@ app.on('activate', () => {
   }
 });
 
-const ipcMain = require('electron').ipcMain
-ipcMain.on('asynchronous-message', function (event, arg) {
+ipcMain.on('import', function (event, arg) {
   console.log(arg)  // prints "ping"
-  event.sender.send('asynchronous-reply', 'pong')
-})
-
-ipcMain.on('synchronous-message', function (event, arg) {
-  console.log(arg)  // prints "ping"
-  event.returnValue = 'pong'
+  // event.sender.send('asynchronous-reply', 'pong')
 })

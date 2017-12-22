@@ -1,3 +1,5 @@
+var db = require('./js/database')
+
 var module = angular.module("reminder", [ 'ngRoute'])
 
 // 一覧画面
@@ -5,7 +7,8 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	"listController",
 	function($scope, $timeout) {
 		$scope.records = []
-		searchAll($scope)
+
+		db.searchAll($scope)
 		$scope.tags = []
 
 		$scope.closeTag = (tag) => {
@@ -25,7 +28,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 .controller(
 		'detailController',
 		function($scope, $routeParams, $location, $anchorScroll, $timeout) {
-			searchById($routeParams.noteId).then((record) => {
+			db.searchById($routeParams.noteId).then((record) => {
 				$timeout(() => {
 					$scope.view = record;
 					$anchorScroll();
@@ -39,7 +42,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 
 			$scope.delete = function() {
 				if (window.confirm("削除しますか？")) {
-					deleteNote($routeParams.noteId).then((arg) => {
+					db.deleteNote($routeParams.noteId).then((arg) => {
 						$scope.$parent.records.forEach(function(record, i) {
 							if (record.noteId == $routeParams.noteId) {
 								$timeout(function() {
@@ -70,7 +73,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	var isNew = $routeParams.noteId == undefined
 	console.log('isNew:' + isNew);
 	if (!isNew) {
-		searchById($routeParams.noteId).then((record) => {
+		db.searchById($routeParams.noteId).then((record) => {
 			$timeout(() => {
 				console.log(record);
 				$scope.record = record
@@ -92,7 +95,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			data.tags = tags.split(',');
 		}
 		data.text = $scope.record.text;
-		register(data).then((noteId) =>{
+		db.register(data).then((noteId) =>{
 			$timeout(() => {
 				data.noteId = noteId
 				if (isNew) {
