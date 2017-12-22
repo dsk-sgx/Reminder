@@ -93,4 +93,4 @@ var database = (() => {
   }
 })();
 
- = database;
+module.exports = database;
