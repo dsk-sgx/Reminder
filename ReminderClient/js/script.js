@@ -8,7 +8,18 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	function($scope, $timeout) {
 		$scope.records = []
 
-		db.searchAll($scope)
+		var refresh = (scope) => {
+			$scope.count = $scope.records.length;
+			$scope.$apply()
+		}
+		db.searchAll($scope.records, (cursor) => {
+			if ($scope.records.length % 100 == 0) {
+				refresh($scope);
+			}
+		}).then((records) => {
+			refresh($scope);
+		})
+
 		$scope.tags = []
 
 		$scope.closeTag = (tag) => {

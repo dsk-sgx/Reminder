@@ -29,27 +29,24 @@ var database = (() => {
     })
   }
 
-  var searchAll = (scope) => {
-    openDb().then((db) => {
-      console.log('searhAll start');
-      var trans = db.transaction([STORE_NANE])
-      var store = trans.objectStore(STORE_NANE)
-      var request = store.openCursor()
-      var count = 0;
-      request.onsuccess = (event) => {
-        var cursor = event.target.result
-        if (cursor) {
-          scope.records.push({noteId:cursor.value.noteId, title:cursor.value.title, text:cursor.value.text, tags:cursor.value.tags})
-          cursor.continue()
-          count++
+  var searchAll = (records, callback) => {
+    return new Promise((resolve, reject) => {
+      openDb().then((db) => {
+        var trans = db.transaction([STORE_NANE])
+        var store = trans.objectStore(STORE_NANE)
+        var request = store.openCursor()
+        request.onsuccess = (event) => {
+          var cursor = event.target.result
+          if (cursor) {
+            records.push({noteId:cursor.value.noteId, title:cursor.value.title, text:cursor.value.text, tags:cursor.value.tags})
+            callback(cursor);
+            cursor.continue()
+          } else {
+            resolve(records)
+          }
         }
-        if (100 == count || !cursor) {
-          scope.count = scope.records.length
-          scope.$apply()
-          count = 0
-        }
-        console.log('searhAll end');
-      }
+        request.onerror = (event) => reject(event)
+      })
     })
   }
 
@@ -96,4 +93,4 @@ var database = (() => {
   }
 })();
 
-module.exports = database;
+ = database;
