@@ -1,3 +1,5 @@
+var db = require('./js/database')
+
 var module = angular.module("reminder", [ 'ngRoute'])
 
 // 一覧画面
@@ -6,7 +8,19 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	function($scope, $timeout) {
 		
 		$scope.records = []
-		searhAll($scope)
+
+		var refresh = (scope) => {
+			$scope.count = $scope.records.length;
+			$scope.$apply()
+		}
+		db.searchAll($scope.records, (cursor) => {
+			if ($scope.records.length % 100 == 0) {
+				refresh($scope);
+			}
+		}).then((records) => {
+			refresh($scope);
+		})
+
 		$scope.tags = []
 
 		$scope.closeTag = (tag) => {
@@ -26,9 +40,8 @@ var module = angular.module("reminder", [ 'ngRoute'])
 .controller(
 		'detailController',
 		function($scope, $routeParams, $location, $anchorScroll, $timeout) {
-			searchById($routeParams.noteId).then((record) => {
+			db.searchById($routeParams.noteId).then((record) => {
 				$timeout(() => {
-					console.log(record);
 					$scope.view = record;
 					$anchorScroll();
 				})
@@ -41,10 +54,8 @@ var module = angular.module("reminder", [ 'ngRoute'])
 
 			$scope.delete = function() {
 				if (window.confirm("削除しますか？")) {
-					deleteNote($routeParams.noteId).then((arg) => {
-						console.log('arg');
-						console.log(arg);
-					  $scope.$parent.records.forEach(function(record, i) {
+					db.deleteNote($routeParams.noteId).then((arg) => {
+						$scope.$parent.records.forEach(function(record, i) {
 							if (record.noteId == $routeParams.noteId) {
 								$timeout(function() {
 									$scope.$parent.records.splice(i, 1)
@@ -74,7 +85,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	var isNew = $routeParams.noteId == undefined
 	console.log('isNew:' + isNew);
 	if (!isNew) {
-		searchById($routeParams.noteId).then((record) => {
+		db.searchById($routeParams.noteId).then((record) => {
 			$timeout(() => {
 				console.log(record);
 				$scope.record = record
@@ -96,7 +107,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			data.tags = tags.split(',');
 		}
 		data.text = $scope.record.text;
-		register(data).then((noteId) =>{
+		db.register(data).then((noteId) =>{
 			$timeout(() => {
 				data.noteId = noteId
 				if (isNew) {
@@ -123,15 +134,15 @@ var module = angular.module("reminder", [ 'ngRoute'])
 })
 
 // マークダウンに変換するフィルタ
-.filter('marked', function() {
-	return function(value) {
+.filter('marked', () => {
+	return (value) => {
     return marked(value);
   };
 })
 
 // キーワード・タグ検索のフィルタ
-.filter('keywordFilter',function() {
-	return function(records, keyword, tags) {
+.filter('keywordFilterOld',() => {
+	return (records, keyword, tags) => {
 		if (keyword == undefined && tags.length == 0) {
 			return records;
 		}
@@ -144,6 +155,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 				}
 				var result = true;
 				keywords.forEach((keyword) => {
+
 					if (record.title.toLowerCase().indexOf(keyword.toLowerCase()) < 0 &&
 							record.text.toLowerCase().indexOf(keyword.toLowerCase()) < 0 &&
 							record.tags.indexOf(keyword) < 0) {
@@ -173,6 +185,27 @@ var module = angular.module("reminder", [ 'ngRoute'])
 			}
 		})
 		return result
+	}
+})
+.filter('keywordFilter',() => {
+	var matchTag = (record, tags) => {
+    return tags.length == 0 ||
+		  tags.every((e) => record.tags.includes(e))
+	}
+	var matchKeyword = (record, keywords) => {
+		return keywords.length === 0  ||
+			keywords.every((e) => {
+					return 0 <= record.title.toLowerCase().indexOf(e.toLowerCase()) ||
+					       0 <= record.text.toLowerCase().indexOf(e.toLowerCase()) ||
+								 0 <= record.tags.toString().toLowerCase().indexOf(e.toLowerCase());
+			})
+	}
+
+	return (records, keyword, tags) => {
+		var keywords = keyword ==　undefined ? [] : keyword.split(' ');
+		return records
+		  .filter((record) => matchTag(record, tags))
+			.filter((record) => matchKeyword(record, keywords))
 	}
 })
 

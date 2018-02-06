@@ -15,7 +15,6 @@
 <script src="./js/angular.js"></script>
 <script src="./js/angular-route.js"></script>
 <script src="./js/script.js"></script>
-<script src="./js/database.js"></script>
 <script src="./js/sync.js"></script>
 <script src="./js/menu.js"></script>
 <script src="./node_modules/marked/lib/marked.js"></script>
@@ -28,6 +27,7 @@
 
 <!-- Other -->
 <script src="./js/custom_items.js"></script>
+<script src="./js/menuEvent.js"></script>
 </head>
 
 <body ng-app="reminder">
@@ -52,7 +52,7 @@
 						<div class="pull-right">
 							<input id="ke" type="text" class="form-control navbar-form" ng-model="keyword" placeholder="Search" title="スペース区切りでAND検索が出来ます">
 							<div>
-								<span ng-bind="(records|keywordFilter:keyword:tags).length"></span></span>
+								<span ng-bind="filtered.length"></span></span>
 								<span ng-bind="' / ' + count"></span>
 								<span>件を表示</span>
 							</div>
@@ -62,13 +62,14 @@
 			</nav>
 		</header>
 		<div id="list" class="list-group">
-			<a class="list-group-item" href="#notes/{{(record.noteId)}}" ng-repeat="record in records | keywordFilter:keyword:tags">
+			<a class="list-group-item" href="#notes/{{(record.noteId)}}" ng-repeat="record in filtered = (records | keywordFilter:keyword:tags)">
 				<p id="title" nowrap>{{record.title}}</p>
 				<p id="tag" ng-repeat="tag in record.tags | limitTo: 3">#{{tag}}&nbsp;</p>
 			</a>
 		</div>
 		<div id="list_open">></div>
 		<div id="content" ng-view ></div>
+		<input type="file" id="file" style="display:none">
 		<footer></footer>
 	</div>
 </body>
