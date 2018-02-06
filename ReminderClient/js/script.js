@@ -4,6 +4,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 .controller(
 	"listController",
 	function($scope, $timeout) {
+		
 		$scope.records = []
 		searhAll($scope)
 		$scope.tags = []

@@ -23,7 +23,7 @@ var template = electron.Menu.buildFromTemplate(
           {
             label: 'Export',
             click: function() {
-              console.log('Export');
+              exportData()
             }
           },
           {
@@ -37,10 +37,14 @@ var template = electron.Menu.buildFromTemplate(
   ]
 );
 
-// electron.Menu.setApplicationMenu(template);
-
 // 新しいウィンドウ(Webページ)を生成
 let win;
+
+function exportData() {
+  console.log("export")
+  win.webContents.send('export')
+}
+
 function createWindow() {
 
   // const menu = Menu.buildFromTemplate(template)
@@ -51,12 +55,13 @@ function createWindow() {
   // index.htmlを表示
   win.loadURL(`file://${__dirname}/index.html`);
   // デバッグするためのDevToolsを表示
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
   // ウィンドウを閉じたら参照を破棄
   win.on('closed', () => {   // ()は　function ()と書いていい
     win = null;
   });
 }
+
 // アプリの準備が整ったらウィンドウを表示
 app.on('ready', createWindow);
 // 全てのウィンドウを閉じたらアプリを終了

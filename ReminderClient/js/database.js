@@ -51,6 +51,27 @@ var searhAll = function(scope, keyword) {
   })
 }
 
+var searhAllSync = function() {
+  var records = [];
+  openDb().then((db) => {
+    var trans = db.transaction([STORE_NANE])
+    var store = trans.objectStore(STORE_NANE)
+    var request = store.openCursor()
+    var count = 0;
+    request.onsuccess = (event) => {
+      var cursor = event.target.result
+      if (cursor) {
+        records.push({noteId:cursor.value.noteId, title:cursor.value.title, text:cursor.value.text, tags:cursor.value.tags})
+        cursor.continue()
+      } else {
+        console.log("return ");
+        console.log(records);
+        return records;
+      }
+    }
+  })
+}
+
 var searchById = function(noteId) {
   return new Promise(function(resolve, reject) {
     console.log(noteId);

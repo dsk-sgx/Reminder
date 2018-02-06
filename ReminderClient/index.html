@@ -6,7 +6,8 @@
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 
 <script>
-window.jQuery = window.$ = require('./js/jquery');
+	window.jQuery = window.$ = require('./js/jquery');
+
 </script>
 
 <!-- AngularJS -->
@@ -16,6 +17,7 @@ window.jQuery = window.$ = require('./js/jquery');
 <script src="./js/script.js"></script>
 <script src="./js/database.js"></script>
 <script src="./js/sync.js"></script>
+<script src="./js/menu.js"></script>
 <script src="./node_modules/marked/lib/marked.js"></script>
 </script>
 
@@ -48,7 +50,7 @@ window.jQuery = window.$ = require('./js/jquery');
 								　</li>
 						</ul>
 						<div class="pull-right">
-							<input id="ke" type="text" class="form-control navbar-form" ng-model="keyword" placeholder="検索キーワード" title="スペース区切りでAND検索が出来ます">
+							<input id="ke" type="text" class="form-control navbar-form" ng-model="keyword" placeholder="Search" title="スペース区切りでAND検索が出来ます">
 							<div>
 								<span ng-bind="(records|keywordFilter:keyword:tags).length"></span></span>
 								<span ng-bind="' / ' + count"></span>
