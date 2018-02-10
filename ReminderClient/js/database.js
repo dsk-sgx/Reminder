@@ -29,17 +29,20 @@ var database = (() => {
     })
   }
 
-  var searchAll = (records, callback) => {
+  var searchAll = (callback) => {
     return new Promise((resolve, reject) => {
       openDb().then((db) => {
         var trans = db.transaction([STORE_NANE])
         var store = trans.objectStore(STORE_NANE)
         var request = store.openCursor()
+        var records = []
         request.onsuccess = (event) => {
           var cursor = event.target.result
           if (cursor) {
             records.push({noteId:cursor.value.noteId, title:cursor.value.title, text:cursor.value.text, tags:cursor.value.tags})
-            callback(cursor);
+            if (callback != undefined) {
+              callback(records, cursor);
+            }
             cursor.continue()
           } else {
             resolve(records)

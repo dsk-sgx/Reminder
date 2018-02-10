@@ -38,18 +38,14 @@ let win;
 function createWindow() {
 
   Menu.setApplicationMenu(template)
-
-  // BrowserWindowインスタンスを生成
   win = new BrowserWindow({width: 1200, height: 800});
   win.loadURL(`file://${__dirname}/index.html`);
-  win.on('closed', () => {   // ()は　function ()と書いていい
+  win.on('closed', () => {
     win = null;
   });
- // win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 }
-// アプリの準備が整ったらウィンドウを表示
 app.on('ready', createWindow);
-// 全てのウィンドウを閉じたらアプリを終了
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
@@ -63,5 +59,4 @@ app.on('activate', () => {
 
 ipcMain.on('import', function (event, arg) {
   console.log(arg)  // prints "ping"
-  // event.sender.send('asynchronous-reply', 'pong')
 })

@@ -7,24 +7,23 @@ var module = angular.module("reminder", [ 'ngRoute'])
 	"listController",
 	function($scope, $timeout) {
 		$scope.records = []
-
-		var refresh = (scope) => {
+		var refresh = (records) => {
+			$scope.records = records;
 			$scope.count = $scope.records.length;
 			$scope.$apply()
 		}
-		db.searchAll($scope.records, (cursor) => {
-			if ($scope.records.length % 100 == 0) {
-				refresh($scope);
+		db.searchAll((records, cursor) => {
+			if (records.length % 100 == 0) {
+				refresh(records);
 			}
 		}).then((records) => {
-			refresh($scope);
+			refresh(records);
 		})
 
 		$scope.tags = []
-
 		$scope.closeTag = (tag) => {
 			$timeout(function () {
-				$scope.tags.forEach(function(value, i) {
+				$scope.tags.forEach((value, i) => {
 					if (tag == value) {
 						$scope.tags.splice(i, 1)
 						return
@@ -46,12 +45,13 @@ var module = angular.module("reminder", [ 'ngRoute'])
 				})
 			})
 
-			$scope.edit = function() {
-				console.log('edit')
-				$location.path('/record/' + $routeParams.noteId);
+			$scope.edit = () => {
+				var value = "abc";
+				console.log(`edit : /record/${$routeParams.noteId}`)
+				$location.path(`/record/${$routeParams.noteId}`);
 			}
 
-			$scope.delete = function() {
+			$scope.delete = () => {
 				if (window.confirm("削除しますか？")) {
 					db.deleteNote($routeParams.noteId).then((arg) => {
 						$scope.$parent.records.forEach(function(record, i) {
@@ -68,7 +68,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 				}
 			}
 
-			$scope.searchTag = function(tag) {
+			$scope.searchTag = (tag) => {
 				$timeout(function(){
 					if ($scope.$parent.tags.includes(tag)) {
 						console.log('inclueds')
@@ -93,7 +93,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		})
 	}
 
-	$scope.submit = function() {
+	$scope.submit = () => {
 		console.log('create');
 		var data = $scope.record;
 
@@ -127,7 +127,7 @@ var module = angular.module("reminder", [ 'ngRoute'])
 		})
 	}
 
-	$scope.parseMarkdown = function() {
+	$scope.parseMarkdown = () => {
     $("#preview").html(marked($scope.record.text))
 	}
 })
